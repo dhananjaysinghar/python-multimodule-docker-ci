@@ -89,12 +89,13 @@ docker-build: ## Will create docker image
 
 
 .PHONY: docker-run
-docker-run: docker-build ## Will create docker image and run docker image in random port
+docker-run: docker-build
 	@for application in $(APPLICATIONS); do \
   		echo "Running Docker container for $$application with random outbound port..." ; \
   		container_id=$$(docker run --name $$application -p 0:8501 -d $$application) ; \
   		port=$$(docker inspect --format='{{(index (index .NetworkSettings.Ports "8501/tcp") 0).HostPort}}' $$container_id) ; \
-  		echo "$$application running on port $$port" ; \
+  		hostname=$$(hostname) ; \
+  		echo "$$application running on $$hostname at port $$port" ; \
   	done;
 
 .PHONY: help
