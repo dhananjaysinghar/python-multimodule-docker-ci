@@ -80,11 +80,13 @@ ci: clean build package ## Clean, build, and package all applications
 
 .PHONY: docker-build
 docker-build: ## Will create docker image
-	@for application in $(APPLICATIONS); do \
+	@FAILURES=0 ; \
+	for application in $(APPLICATIONS); do \
   		echo "Building Docker image for $$application..." ; \
-  		docker build -t $$application ./applications/$$application || FAILURES=$$(( $$FAILURES+1 )) ; \
+  		docker build -t $$application ./applications/$$application || FAILURES=$$(( FAILURES + 1 )) ; \
   	done; \
-  	exit $$(( $$FAILURES ))
+  	exit $$FAILURES
+
 
 .PHONY: docker-run
 docker-run: docker-build ## Will create docker image and run docker image in random port
